@@ -165,5 +165,3 @@ Compares single tree vs ensemble streaming accuracy and NumPy vs Python-loop spe
 5. **`visualise.py`** uses a non-interactive `Agg` backend by default so it works in scripts and notebooks without a display.
 
 ---
-
-*Built by Hemanth Kumar Reddyvari — Assignment 2.2, Programming for AI, Adelaide University.*

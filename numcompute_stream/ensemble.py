@@ -9,7 +9,7 @@ Classes
 RandomForestClassifier  : Bagging of decision trees with feature sub-sampling.
 BaggingClassifier       : Generic bagging over any number of trees.
 AdaBoostClassifier      : Discrete AdaBoost (SAMME) with streaming support.
-EnsembleClassifier      : Unified wrapper – selects method via ``method`` param.
+EnsembleClassifier      : Unified wrapper - selects method via ``method`` param.
 """
 
 import numpy as np
