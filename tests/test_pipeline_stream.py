@@ -1,4 +1,3 @@
-"""Tests for streaming Pipeline and StreamTrainer."""
 import numpy as np
 import pytest
 from numcompute_stream.pipeline import Pipeline, Transformer, Estimator
@@ -6,33 +5,21 @@ from numcompute_stream.preprocessing import StandardScaler, SimpleImputer
 from numcompute_stream.ensemble import EnsembleClassifier
 from numcompute_stream.stream import StreamTrainer
 
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 class DoubleTransformer(Transformer):
     def fit(self, X): return self
     def partial_fit(self, X): return self
     def transform(self, X): return X * 2
-
 
 class AddOneTransformer(Transformer):
     def fit(self, X): return self
     def partial_fit(self, X): return self
     def transform(self, X): return X + 1
 
-
 def make_data(n=120, seed=7):
     rng = np.random.default_rng(seed)
     X = rng.standard_normal((n, 4))
     y = (X[:, 0] + X[:, 1] > 0).astype(int)
     return X, y
-
-
-# ---------------------------------------------------------------------------
-# Pipeline tests
-# ---------------------------------------------------------------------------
 
 class TestPipeline:
     def test_single_step(self):
@@ -91,11 +78,6 @@ class TestPipeline:
     def test_repr_contains_names(self):
         pipe = Pipeline([("a", DoubleTransformer()), ("b", AddOneTransformer())])
         assert "a" in repr(pipe) and "b" in repr(pipe)
-
-
-# ---------------------------------------------------------------------------
-# StreamTrainer tests
-# ---------------------------------------------------------------------------
 
 class TestStreamTrainer:
     def _make_pipe(self):

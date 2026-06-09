@@ -1,9 +1,3 @@
-"""
-benchmark/run_benchmarks.py
-Compares base DecisionTree vs Random Forest (ensemble) under streaming
-conditions, plus the usual NumPy-vs-loop vectorisation benchmarks.
-"""
-
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -14,11 +8,6 @@ from numcompute_stream.ensemble import EnsembleClassifier
 from numcompute_stream.preprocessing import StandardScaler
 from numcompute_stream.pipeline import Pipeline
 
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 def timeit(fn, repeats=5):
     times = []
     for _ in range(repeats):
@@ -27,18 +16,12 @@ def timeit(fn, repeats=5):
         times.append(time.perf_counter() - t0)
     return np.mean(times)
 
-
 def print_table(results):
     print(f"\n{'Operation':<45} {'Time (s)':<12} {'Note'}")
     print("-" * 75)
     for name, t, note in results:
         print(f"{name:<45} {t:<12.4f} {note}")
     print()
-
-
-# ---------------------------------------------------------------------------
-# Data
-# ---------------------------------------------------------------------------
 
 rng = np.random.default_rng(0)
 N = 2000
@@ -50,7 +33,6 @@ chunks = [(X_full[i:i+CHUNK], y_full[i:i+CHUNK]) for i in range(0, N, CHUNK)]
 print("Running streaming benchmarks …\n")
 results = []
 
-# --- Single tree streaming ---
 def bench_tree():
     tree = DecisionTreeClassifier(max_depth=5)
     for X_c, y_c in chunks:
@@ -60,7 +42,6 @@ def bench_tree():
 t_tree = timeit(bench_tree)
 results.append(("Single DecisionTree (10 chunks, n=2000)", t_tree, "streaming"))
 
-# --- Random Forest streaming ---
 def bench_rf():
     rf = EnsembleClassifier(method="random_forest", n_estimators=10, max_depth=4)
     for X_c, y_c in chunks:
@@ -70,7 +51,6 @@ def bench_rf():
 t_rf = timeit(bench_rf)
 results.append(("RandomForest n=10 (10 chunks, n=2000)", t_rf, "streaming"))
 
-# --- AdaBoost streaming ---
 def bench_ada():
     ada = EnsembleClassifier(method="adaboost", n_estimators=10, max_depth=1)
     for X_c, y_c in chunks:
@@ -80,7 +60,6 @@ def bench_ada():
 t_ada = timeit(bench_ada)
 results.append(("AdaBoost n=10 (10 chunks, n=2000)", t_ada, "streaming"))
 
-# --- Pipeline overhead ---
 def bench_pipe():
     pipe = Pipeline([
         ("scale", StandardScaler()),
@@ -93,7 +72,6 @@ def bench_pipe():
 t_pipe = timeit(bench_pipe)
 results.append(("Pipeline (scaler + RF, 10 chunks)", t_pipe, "streaming"))
 
-# --- NumPy vs loop mean ---
 data_large = np.random.rand(100_000)
 
 def numpy_mean(): return np.mean(data_large)
@@ -108,7 +86,6 @@ results.append(("NumPy mean (n=100,000)", t_np, f"loop={t_lp:.4f}s  speedup={t_l
 
 print_table(results)
 
-# Accuracy comparison
 tree2 = DecisionTreeClassifier(max_depth=5)
 rf2   = EnsembleClassifier(method="random_forest", n_estimators=10, max_depth=4)
 for X_c, y_c in chunks:

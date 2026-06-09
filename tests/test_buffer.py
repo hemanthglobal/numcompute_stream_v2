@@ -1,21 +1,13 @@
-"""
-test_buffer.py
-
-Tests for the bounded buffer (max_buffer) feature in tree and ensemble classes.
-Verifies that memory is capped and predictions still work correctly.
-"""
 import numpy as np
 import pytest
 from numcompute_stream.tree import DecisionTreeClassifier
 from numcompute_stream.ensemble import EnsembleClassifier
-
 
 def make_data(n=200, seed=0):
     rng = np.random.default_rng(seed)
     X = rng.standard_normal((n, 4))
     y = (X[:, 0] + X[:, 1] > 0).astype(int)
     return X, y
-
 
 class TestTreeBuffer:
     def test_max_buffer_caps_accumulation(self):
@@ -47,7 +39,6 @@ class TestTreeBuffer:
         tree.partial_fit(X[:50], y[:50])
         tree.partial_fit(X[50:], y[50:])
         assert len(tree._y_acc) <= 30
-
 
 class TestEnsembleBuffer:
     def test_rf_max_buffer_caps_buffer(self):

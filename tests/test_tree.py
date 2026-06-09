@@ -1,15 +1,12 @@
-"""Tests for DecisionTreeClassifier."""
 import numpy as np
 import pytest
 from numcompute_stream.tree import DecisionTreeClassifier
-
 
 def make_data(n=100, seed=0):
     rng = np.random.default_rng(seed)
     X = rng.standard_normal((n, 4))
     y = (X[:, 0] + X[:, 1] > 0).astype(int)
     return X, y
-
 
 class TestDecisionTree:
     def test_fit_predict_shape(self):

@@ -1,4 +1,3 @@
-"""Tests for ensemble methods."""
 import numpy as np
 import pytest
 from numcompute_stream.ensemble import (
@@ -6,13 +5,11 @@ from numcompute_stream.ensemble import (
     AdaBoostClassifier, EnsembleClassifier
 )
 
-
 def make_data(n=150, seed=42):
     rng = np.random.default_rng(seed)
     X = rng.standard_normal((n, 4))
     y = (X[:, 0] + X[:, 1] > 0).astype(int)
     return X, y
-
 
 class TestRandomForest:
     def test_fit_predict(self):
@@ -56,7 +53,6 @@ class TestRandomForest:
         proba = rf.predict_proba(X)
         assert np.allclose(proba.sum(axis=1), 1.0, atol=1e-6)
 
-
 class TestBagging:
     def test_fit_predict(self):
         X, y = make_data()
@@ -70,7 +66,6 @@ class TestBagging:
         bag.partial_fit(X[:100], y[:100])
         bag.partial_fit(X[100:], y[100:])
         assert bag.predict(X).shape == (200,)
-
 
 class TestAdaBoost:
     def test_fit_predict(self):
@@ -93,7 +88,6 @@ class TestAdaBoost:
         proba = ada.predict_proba(X)
         assert proba.shape == (len(X), 2)
         assert np.allclose(proba.sum(axis=1), 1.0, atol=1e-6)
-
 
 class TestEnsembleClassifier:
     def test_random_forest(self):

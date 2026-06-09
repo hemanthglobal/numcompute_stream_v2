@@ -1,11 +1,9 @@
-"""Tests for streaming metrics."""
 import numpy as np
 import pytest
 from numcompute_stream.metrics import (
     StreamingMetrics, accuracy, precision, recall, f1, mse,
     confusion_matrix, roc_curve, auc
 )
-
 
 class TestStreamingMetrics:
     def test_update_and_accuracy(self):
@@ -15,9 +13,8 @@ class TestStreamingMetrics:
 
     def test_two_chunk_cumulative(self):
         sm = StreamingMetrics()
-        sm.update(np.array([0, 1]), np.array([0, 1]))    # 100%
-        sm.update(np.array([0, 1]), np.array([1, 0]))    # 0%
-        # Cumulative: 2 right out of 4
+        sm.update(np.array([0, 1]), np.array([0, 1]))
+        sm.update(np.array([0, 1]), np.array([1, 0]))
         assert sm.result()["accuracy"] == pytest.approx(0.5)
 
     def test_reset(self):
@@ -52,9 +49,8 @@ class TestStreamingMetrics:
 
     def test_rolling_accuracy(self):
         sm = StreamingMetrics(window_size=4)
-        sm.update(np.array([1, 1]), np.array([0, 0]))  # 0% in window
-        sm.update(np.array([1, 1]), np.array([1, 1]))  # pushed old out
-        # window now has last 4 samples: 2 wrong + 2 right = 50%
+        sm.update(np.array([1, 1]), np.array([0, 0]))
+        sm.update(np.array([1, 1]), np.array([1, 1]))
         r = sm.rolling_accuracy()
         assert 0.0 <= r <= 1.0
 
@@ -64,7 +60,6 @@ class TestStreamingMetrics:
         with pytest.raises(RuntimeError):
             sm.rolling_accuracy()
 
-
 class TestBatchMetrics:
     def test_accuracy_perfect(self):
         assert accuracy([1, 0, 1], [1, 0, 1]) == pytest.approx(1.0)
@@ -73,7 +68,6 @@ class TestBatchMetrics:
         assert accuracy([0, 0], [1, 1]) == pytest.approx(0.0)
 
     def test_precision_zero_division(self):
-        # All predicted negative
         assert precision([1, 1], [0, 0], pos_label=1) == pytest.approx(0.0)
 
     def test_recall_zero_division(self):

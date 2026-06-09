@@ -1,8 +1,3 @@
-"""
-NumCompute-Stream: A Modularised Ensemble Tree-based Streaming ML Framework.
-Built on plain Python and NumPy only.
-"""
-
 from numcompute_stream.io import load_csv, load_csv_with_header
 from numcompute_stream.preprocessing import StandardScaler, MinMaxScaler, SimpleImputer, OneHotEncoder
 from numcompute_stream.stats import StreamingStats

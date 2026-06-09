@@ -1,10 +1,8 @@
-"""Tests for streaming statistics."""
 import numpy as np
 import pytest
 from numcompute_stream.stats import (
     StreamingStats, mean, median, std, histogram, quantile, summary
 )
-
 
 class TestStreamingStats:
     def test_update_mean(self):
@@ -16,7 +14,6 @@ class TestStreamingStats:
         ss = StreamingStats()
         ss.update_stats(np.array([[1.0], [3.0]]))
         ss.update_stats(np.array([[5.0], [7.0]]))
-        # Overall mean of 1,3,5,7 = 4.0
         assert ss.mean_[0] == pytest.approx(4.0)
 
     def test_running_min_max(self):
@@ -30,7 +27,6 @@ class TestStreamingStats:
         ss = StreamingStats()
         ss.update_stats(np.arange(10).reshape(5, 2))
         ss.update_stats(np.arange(10).reshape(5, 2))
-        # n_seen_ is now a per-feature array after the NaN-weighting fix
         assert np.all(ss.n_seen_ == 10)
 
     def test_reset(self):
@@ -71,7 +67,6 @@ class TestStreamingStats:
         s = ss.summary()
         for key in ["mean", "std", "min", "max", "n_seen"]:
             assert key in s
-
 
 class TestBatchStats:
     def test_mean_nan(self):

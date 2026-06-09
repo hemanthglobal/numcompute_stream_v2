@@ -1,10 +1,8 @@
-"""Tests for streaming preprocessing components."""
 import numpy as np
 import pytest
 from numcompute_stream.preprocessing import (
     StandardScaler, MinMaxScaler, SimpleImputer, OneHotEncoder
 )
-
 
 class TestStandardScaler:
     def test_fit_transform_mean_zero(self):
@@ -30,7 +28,6 @@ class TestStandardScaler:
         scaler = StandardScaler()
         scaler.partial_fit(X1)
         scaler.partial_fit(X2)
-        # Running mean of 1..6 = 3.5
         assert abs(scaler.mean_[0] - 3.5) < 0.01
 
     def test_constant_column_no_divide_by_zero(self):
@@ -38,8 +35,7 @@ class TestStandardScaler:
         scaler = StandardScaler()
         X_s = scaler.fit_transform(X)
         assert not np.any(np.isnan(X_s))
-        assert np.allclose(X_s[:, 0], 0.0)   # constant col stays zero
-
+        assert np.allclose(X_s[:, 0], 0.0)
 
 class TestMinMaxScaler:
     def test_range_zero_one(self):
@@ -68,7 +64,6 @@ class TestMinMaxScaler:
         with pytest.raises(RuntimeError):
             scaler.transform(np.array([[1.0]]))
 
-
 class TestSimpleImputer:
     def test_constant_fills_nan(self):
         X = np.array([[1.0, np.nan], [3.0, 4.0]])
@@ -88,7 +83,6 @@ class TestSimpleImputer:
         imp = SimpleImputer(strategy="mean")
         imp.fit(X)
         X_out = imp.transform(X)
-        # Column 1 mean from non-NaN = 4.0; NaN filled with 4.0
         assert X_out[0, 1] == pytest.approx(4.0)
 
     def test_invalid_strategy_raises(self):
@@ -99,9 +93,7 @@ class TestSimpleImputer:
         imp = SimpleImputer(strategy="mean")
         imp.partial_fit(np.array([[2.0], [4.0]]))
         imp.partial_fit(np.array([[6.0], [8.0]]))
-        # Running mean = (2+4+6+8)/4 = 5.0
         assert imp._running_mean[0] == pytest.approx(5.0)
-
 
 class TestOneHotEncoder:
     def test_shape(self):
